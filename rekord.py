@@ -6,7 +6,10 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 import os
 import pygame
+import speech_recognition as sr
+import pyaudio
 
+# git on origin main
 
 pygame.init()
 Builder.load_file('rekord.kv')
@@ -49,6 +52,16 @@ class Plei(Screen):
         except:
             pass
 
+
+    def tunnista(self):
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            try:
+                audio = r.listen(source)
+                text = r.recognize_google(audio, language="ru")
+                self.ids.tunne.text = text
+            except:
+                pass
 class RootWidget(ScreenManager):
     pass
 
