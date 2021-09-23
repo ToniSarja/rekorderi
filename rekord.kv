@@ -1,0 +1,21 @@
+<Plei>:
+    GridLayout:
+        cols: 1
+        Button:
+            text: 'Toista'
+            on_press: root.soita()
+        Button:
+            text: 'Nauhoita'
+            on_press: root.nauhoita()
+        Button:
+            text: 'Kuuntele oma nauhoite'
+            on_press: root.kuuntele()
+        Button:
+            text: 'Vertaa nauhoitettasi ääninäytteeseen'
+            on_press: root.vertaa()
+
+<RootWidget>:
+    Plei:
+        name: 'soittaa'
+
+
