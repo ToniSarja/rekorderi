@@ -1,0 +1,13 @@
+engine = create_engine('postgresql://postgres:postgres123@localhost/oikein')
+    table_name = 'data'
+    table_df = pd.read_sql_table(
+        table_name,
+        con=engine
+    )
+
+
+    table_df = table_df.replace([1],'Oikein')
+    table_df = table_df.replace([0],'Virhe')
+    
+    sns.catplot(y='oikein',kind="count", data=table_df)
+    plt.savefig('tilasto.pdf')
