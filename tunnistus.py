@@ -1,8 +1,6 @@
 import speech_recognition as sr
 import pyaudio
 
-import speech_recognition as sr
-
 class Recog:
     def __init__(self):
         self.tunnista()
