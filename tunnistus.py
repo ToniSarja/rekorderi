@@ -1,5 +1,4 @@
 import speech_recognition as sr
-import pyaudio
 
 class Recog:
     def __init__(self):
