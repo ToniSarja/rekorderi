@@ -5,6 +5,7 @@ import os
 import pygame
 import sys
 from settings_west import *
+from pygame.math import Vector2 as vector
 
 
 pygame.init()
@@ -20,7 +21,8 @@ class Recog:
     def recordAudio(self):
         r = sr.Recognizer()
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
+        speak = True
+        if keys[pygame.K_SPACE] and speak:
             with sr.Microphone() as source:
                 try:
                     audio = r.listen(source)
@@ -31,7 +33,7 @@ class Recog:
                     pass
                 except sr.RequestError as e:
                     pass
-
+                speak = False
 
 class Game(Recog):
     def __init__(self):
@@ -44,13 +46,14 @@ class Game(Recog):
 
     def render(self,x):
         return font.render(x, 1, (255,255,255))
-
+    
     def run(self):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+            self.display_surface.fill('black')
             dt = self.clock.tick() / 1000
             data = self.recordAudio()
             text_surface = self.render(data)
@@ -66,3 +69,5 @@ class Game(Recog):
 if __name__=='__main__':
     game = Game()
     game.run()
+
+
