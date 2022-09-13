@@ -1,20 +1,68 @@
 import speech_recognition as sr
+from time import ctime
+import time
+import os
+import pygame
+import sys
+from settings_west import *
+
+
+pygame.init()
+pygame.mixer.init()
+font = pygame.font.SysFont("Arial", 48)
+
 
 class Recog:
     def __init__(self):
-        self.tunnista()
+        super().__init__()
+        self.recordAudio()
 
-    def tunnista(self):
+    def recordAudio(self):
         r = sr.Recognizer()
-        with sr.Microphone() as source:
-            try:
-                audio = r.listen(source)
-                text = r.recognize_google(audio, language="ru")
-                print(text)
-                if text == 'Привет':
-                    print('Как дела')
-            except:
-                pass
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            with sr.Microphone() as source:
+                try:
+                    audio = r.listen(source)
+                    data = r.recognize_google(audio, language="ru")
+                    return data
+
+                except sr.UnknownValueError:
+                    pass
+                except sr.RequestError as e:
+                    pass
+
+
+class Game(Recog):
+    def __init__(self):
+        super().__init__()
+        self.display_surface = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
+        pygame.display.set_caption('Western shooter')
+        self.clock = pygame.time.Clock()
+        self.all_sprites = pygame.sprite.Group()
+        self.recordAudio()
+
+    def render(self,x):
+        return font.render(x, 1, (255,255,255))
+
+    def run(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            dt = self.clock.tick() / 1000
+            data = self.recordAudio()
+            text_surface = self.render(data)
+            self.display_surface.blit(text_surface, (0,50))
+            text_surface = self.render(data)
+            self.display_surface.blit(text_surface, (0,50))
+            self.all_sprites.update(dt)
+            self.all_sprites.draw(self.display_surface)
+
+
+            pygame.display.update()
 
 if __name__=='__main__':
-    Recog()
+    game = Game()
+    game.run()
