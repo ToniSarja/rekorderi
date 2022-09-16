@@ -25,6 +25,7 @@ class Recog:
     def __init__(self):
         super().__init__()
         self.recordAudio()
+        self.check()
 
     def recordAudio(self):
         r = sr.Recognizer()
@@ -40,18 +41,14 @@ class Recog:
                     pass
                 except sr.RequestError as e:
                     pass
-
-class Checker(Recog):
-    def __init__(self):
-        super().__init__()
-
+        
     def check(self):
         voice = self.recordAudio()
         if voice in slovo:
             return slovo[voice]['otvet']
 
 
-class Game(Checker):
+class Game(Recog):
     def __init__(self):
         super().__init__()
         self.display_surface = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
@@ -60,7 +57,7 @@ class Game(Checker):
         self.all_sprites = pygame.sprite.Group()
         self.recordAudio()
         self.check()
-        
+
     def render(self,x):
         return font.render(x, 1, (255,255,255))
 
@@ -84,4 +81,3 @@ class Game(Checker):
 if __name__=='__main__':
     game = Game()
     game.run()
-
