@@ -1,3 +1,4 @@
+from urllib import response
 import speech_recognition as sr
 from time import ctime
 import time
@@ -12,6 +13,13 @@ pygame.init()
 pygame.mixer.init()
 font = pygame.font.SysFont("Arial", 48)
 
+slovo = {
+    'Привет':{'otvet':'Как дела?'},
+    'Нормально':{'otvet':'Тоже'},
+    'Как тебя зовут':{'otvet':'Меня зовут Маша'},
+    'Очень приятно':{'otvet':'Мне тоже'}
+
+}
 
 class Recog:
     def __init__(self):
@@ -21,8 +29,7 @@ class Recog:
     def recordAudio(self):
         r = sr.Recognizer()
         keys = pygame.key.get_pressed()
-        speak = True
-        if keys[pygame.K_SPACE] and speak:
+        if keys[pygame.K_SPACE]:
             with sr.Microphone() as source:
                 try:
                     audio = r.listen(source)
@@ -33,9 +40,18 @@ class Recog:
                     pass
                 except sr.RequestError as e:
                     pass
-                speak = False
 
-class Game(Recog):
+class Checker(Recog):
+    def __init__(self):
+        super().__init__()
+
+    def check(self):
+        voice = self.recordAudio()
+        if voice in slovo:
+            return slovo[voice]['otvet']
+
+
+class Game(Checker):
     def __init__(self):
         super().__init__()
         self.display_surface = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
@@ -43,21 +59,20 @@ class Game(Recog):
         self.clock = pygame.time.Clock()
         self.all_sprites = pygame.sprite.Group()
         self.recordAudio()
-
+        self.check()
+        
     def render(self,x):
         return font.render(x, 1, (255,255,255))
-    
+
     def run(self):
-        while True:
+        while True:                                              
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
             self.display_surface.fill('black')
             dt = self.clock.tick() / 1000
-            data = self.recordAudio()
-            text_surface = self.render(data)
-            self.display_surface.blit(text_surface, (0,50))
+            data = self.check()
             text_surface = self.render(data)
             self.display_surface.blit(text_surface, (0,50))
             self.all_sprites.update(dt)
@@ -69,5 +84,4 @@ class Game(Recog):
 if __name__=='__main__':
     game = Game()
     game.run()
-
 
