@@ -66,8 +66,6 @@ class Game(Recog):
             data = self.recordAudio()
             text_surface = self.render(data)
             self.display_surface.blit(text_surface, (0,50))
-            text_surface = self.render(data)
-            self.display_surface.blit(text_surface, (0,50))
             self.all_sprites.update(dt)
             self.all_sprites.draw(self.display_surface)
 
