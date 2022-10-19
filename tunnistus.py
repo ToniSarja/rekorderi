@@ -4,8 +4,12 @@ import time
 import os
 import pygame
 import sys
-from settings_west import *
 from pygame.math import Vector2 as vector
+
+WINDOW_WIDTH, WINDOW_HEIGHT = 1280,720
+
+otklik = {'Привет':{'otvet':'как дела?'},
+		'нормально':{'otvet':'у меня тоже'}}
 
 
 pygame.init()
