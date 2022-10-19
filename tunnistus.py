@@ -1,4 +1,3 @@
-from urllib import response
 import speech_recognition as sr
 from time import ctime
 import time
@@ -13,24 +12,19 @@ pygame.init()
 pygame.mixer.init()
 font = pygame.font.SysFont("Arial", 48)
 
-slovo = {
-    'Привет':{'otvet':'Как дела?'},
-    'Нормально':{'otvet':'Тоже'},
-    'Как тебя зовут':{'otvet':'Меня зовут Маша'},
-    'Очень приятно':{'otvet':'Мне тоже'}
-
-}
 
 class Recog:
     def __init__(self):
         super().__init__()
-        self.recordAudio()
-        self.check()
+        self.speak = True
+        self.speak_time = None
+        self.speak_cooldown = 200
 
     def recordAudio(self):
         r = sr.Recognizer()
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
+        
+        if keys[pygame.K_SPACE] and self.speak:
             with sr.Microphone() as source:
                 try:
                     audio = r.listen(source)
@@ -41,35 +35,37 @@ class Recog:
                     pass
                 except sr.RequestError as e:
                     pass
-        
-    def check(self):
-        voice = self.recordAudio()
-        if voice in slovo:
-            return slovo[voice]['otvet']
+            self.speak_time = pygame.time.get_ticks()
 
+    def cooldowns(self):
+        current_time = pygame.time.get_ticks()
+        if self.speak:
+            if current_time - self.speak_time >= self.speak_cooldown:
+                self.speak = False
 
 class Game(Recog):
     def __init__(self):
         super().__init__()
         self.display_surface = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
-        pygame.display.set_caption('Western shooter')
+        pygame.display.set_caption('Kielipeli')
         self.clock = pygame.time.Clock()
         self.all_sprites = pygame.sprite.Group()
         self.recordAudio()
-        self.check()
 
     def render(self,x):
         return font.render(x, 1, (255,255,255))
-
+    
     def run(self):
-        while True:                                              
+        while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
             self.display_surface.fill('black')
             dt = self.clock.tick() / 1000
-            data = self.check()
+            data = self.recordAudio()
+            text_surface = self.render(data)
+            self.display_surface.blit(text_surface, (0,50))
             text_surface = self.render(data)
             self.display_surface.blit(text_surface, (0,50))
             self.all_sprites.update(dt)
