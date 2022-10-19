@@ -50,7 +50,6 @@ class Game(Recog):
         pygame.display.set_caption('Kielipeli')
         self.clock = pygame.time.Clock()
         self.all_sprites = pygame.sprite.Group()
-        self.recordAudio()
 
     def render(self,x):
         return font.render(x, 1, (255,255,255))
