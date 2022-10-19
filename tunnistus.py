@@ -4,9 +4,9 @@ import time
 import os
 import pygame
 import sys
+from settings_west import *
 from pygame.math import Vector2 as vector
 
-WINDOW_WIDTH, WINDOW_HEIGHT = 1280,720
 
 pygame.init()
 pygame.mixer.init()
@@ -43,6 +43,8 @@ class Recog:
             if current_time - self.speak_time >= self.speak_cooldown:
                 self.speak = False
 
+
+
 class Game(Recog):
     def __init__(self):
         super().__init__()
@@ -65,6 +67,9 @@ class Game(Recog):
             data = self.recordAudio()
             text_surface = self.render(data)
             self.display_surface.blit(text_surface, (0,50))
+            if data in otklik:
+                resp_surface = self.render(otklik[data]['otvet'])
+                self.display_surface.blit(resp_surface, (0,100))
             self.all_sprites.update(dt)
             self.all_sprites.draw(self.display_surface)
 
