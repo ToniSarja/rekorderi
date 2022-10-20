@@ -58,11 +58,6 @@ class Recog:
             if current_time - self.speak_time >= self.speak_cooldown:
                 self.speak = False
 
-
-
-
-
-
 class Game(Recog):
     def __init__(self):
         super().__init__()
@@ -102,4 +97,5 @@ class Game(Recog):
 if __name__=='__main__':
     game = Game()
     game.run()
+
 
