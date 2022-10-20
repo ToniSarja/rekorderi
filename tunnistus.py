@@ -5,6 +5,8 @@ import os
 import pygame
 import sys
 from pygame.math import Vector2 as vector
+import csv
+import json
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280,720
 
@@ -24,15 +26,22 @@ class Recog:
         self.speak_time = None
         self.speak_cooldown = 200
 
+        self.save = True
+        self.save_time = None
+        self.save_cooldown = 2000
+
+        self.sanat = []
+               
     def recordAudio(self):
+        pygame.key.set_repeat()
         r = sr.Recognizer()
         keys = pygame.key.get_pressed()
-        
         if keys[pygame.K_SPACE] and self.speak:
             with sr.Microphone() as source:
                 try:
                     audio = r.listen(source)
                     data = r.recognize_google(audio, language="ru")
+                    self.sanat.append(str(data))
                     return data
 
                 except sr.UnknownValueError:
@@ -40,12 +49,17 @@ class Recog:
                 except sr.RequestError as e:
                     pass
             self.speak_time = pygame.time.get_ticks()
+        
+
 
     def cooldowns(self):
         current_time = pygame.time.get_ticks()
         if self.speak:
             if current_time - self.speak_time >= self.speak_cooldown:
                 self.speak = False
+
+
+
 
 
 
@@ -60,10 +74,15 @@ class Game(Recog):
     def render(self,x):
         return font.render(x, 1, (255,255,255))
     
+  
     def run(self):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    with open('sanasto.csv','a', encoding='utf8') as file:
+                        sanasto = [str(self.sanat)]
+                        writer = csv.writer(file)
+                        writer.writerow(sanasto)
                     pygame.quit()
                     sys.exit()
             self.display_surface.fill('black')
@@ -83,3 +102,4 @@ class Game(Recog):
 if __name__=='__main__':
     game = Game()
     game.run()
+
